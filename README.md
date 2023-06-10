@@ -1,4 +1,5 @@
 ## How to Play Chessentials
+![chess_BstQV3h6JV](https://github.com/Nah-Nova/Chessentials/assets/56248103/b56ff231-b57a-4728-9812-96d392062530)
 
 ### Prerequisites
 - Install Microsoft Visual Studio or any C# IDE on your computer.
@@ -32,4 +33,6 @@
 
 ### Conclusion
 By following the steps mentioned above, you can clone and run the Chess Game project in Microsoft Visual Studio. Enjoy playing the game and have fun improving your chess skills!!
+
+##Gameplay:
 [chess_4c17nFIyJQ](https://github.com/Nah-Nova/Chessentials/assets/56248103/8740b814-ac67-4fc2-bf72-4c9fb8bc66bb)
