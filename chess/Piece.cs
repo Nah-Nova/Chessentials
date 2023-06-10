@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace chess
 {
+    // Class to manage image resources for chess pieces
     public class ResourceScope
     {
         // BLACK
@@ -27,7 +28,11 @@ namespace chess
         public static Image IMAGE_QUEEN_WHITE = Resources.queen_white;
         public static Image IMAGE_KING_WHITE = Resources.king_white;
     }
-    public enum PieceColor { White, Black};
+
+    // Enum to represent the color of a chess piece
+    public enum PieceColor { White, Black };
+
+    // Base class for chess pieces
     public class Piece
     {
         protected List<KeyValuePair<int, int>> _squareCanMove;
@@ -36,6 +41,7 @@ namespace chess
             get { return _squareCanMove; }
             set { _squareCanMove = value; }
         }
+
         protected Square _square;
         public Square Square
         {
@@ -54,28 +60,33 @@ namespace chess
             get { return _color; }
             set { _color = value; }
         }
+
         public Piece(Square sq, PieceColor color)
         {
             _color = color;
             _square = sq;
         }
+
         public virtual bool checkValidMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
             return false;
         }
     }
+
+    // Class representing the King piece
     public class King : Piece
     {
-        public King(Square sq, PieceColor color) : base(sq,color)
+        public King(Square sq, PieceColor color) : base(sq, color)
         {
             if (color == PieceColor.White)
                 _image = ResourceScope.IMAGE_KING_WHITE;
             else
                 _image = ResourceScope.IMAGE_KING_BLACK;
         }
+
         public override bool checkValidMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
-            if( sq.Piece == null || sq.Piece.Color != this.Color)
+            if (sq.Piece == null || sq.Piece.Color != this.Color)
             {
                 if (xAfter == xBefore - 1 && (yAfter == yBefore - 1 || yAfter == yBefore || yAfter == yBefore + 1))
                 {
@@ -94,6 +105,7 @@ namespace chess
         }
     }
 
+    // Class representing the Pawn piece
     public class Pawn : Piece
     {
         public Pawn(Square sq, PieceColor color) : base(sq, color)
@@ -103,6 +115,7 @@ namespace chess
             else
                 _image = ResourceScope.IMAGE_PAWN_BLACK;
         }
+
         public override bool checkValidMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
             if (sq.Piece == null)
@@ -110,7 +123,7 @@ namespace chess
                 if (this.Color == PieceColor.Black)
                 {
                     if (xAfter == xBefore + 1 && (yAfter == yBefore)) return true;
-                    if ((xAfter == xBefore + 2) && (yAfter == yBefore) && sq.Boad.Squares[xBefore+1, yBefore].Piece == null)
+                    if ((xAfter == xBefore + 2) && (yAfter == yBefore) && sq.Boad.Squares[xBefore + 1, yBefore].Piece == null)
                     {
                         return true;
                     }
@@ -145,6 +158,7 @@ namespace chess
         }
     }
 
+    // Class representing the Queen piece
     public class Queen : Piece
     {
         public Queen(Square sq, PieceColor color) : base(sq, color)
@@ -154,6 +168,7 @@ namespace chess
             else
                 _image = ResourceScope.IMAGE_QUEEN_BLACK;
         }
+
         public override bool checkValidMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
             this.SquareCanMove = findListSquareCanMove(xAfter, yAfter, xBefore, yBefore, sq);
@@ -164,6 +179,7 @@ namespace chess
             }
             return false;
         }
+
         public List<KeyValuePair<int, int>> findListSquareCanMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
             List<KeyValuePair<int, int>> list = new List<KeyValuePair<int, int>>();
@@ -188,7 +204,7 @@ namespace chess
                     }
                 }
             }
-            DoneLoop1:
+        DoneLoop1:
             for (int i = xBefore - 1; i >= 0; i--)
             {
                 for (int j = yBefore + 1; j < 8; j++)
@@ -209,7 +225,7 @@ namespace chess
                     }
                 }
             }
-            DoneLoop2:
+        DoneLoop2:
             for (int i = xBefore + 1; i < 8; i++)
             {
                 for (int j = yBefore - 1; j >= 0; j--)
@@ -230,7 +246,7 @@ namespace chess
                     }
                 }
             }
-            DoneLoop3:
+        DoneLoop3:
             for (int i = xBefore + 1; i < 8; i++)
             {
                 for (int j = yBefore + 1; j < 8; j++)
@@ -251,7 +267,7 @@ namespace chess
                     }
                 }
             }
-            DoneLoop4:
+        DoneLoop4:
             for (int i = xBefore + 1; i < 8; i++)
             {
                 if (b.Squares[i, yBefore].Piece == null)
@@ -304,6 +320,7 @@ namespace chess
         }
     }
 
+    // Class representing the Rook piece
     public class Rook : Piece
     {
         public Rook(Square sq, PieceColor color) : base(sq, color)
@@ -314,12 +331,13 @@ namespace chess
                 _image = ResourceScope.IMAGE_ROOK_BLACK;
 
         }
+
         public override bool checkValidMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
             this.SquareCanMove = findListSquareCanMove(xAfter, yAfter, xBefore, yBefore, sq);
-            foreach(KeyValuePair<int, int> sqInLists in this.SquareCanMove)
+            foreach (KeyValuePair<int, int> sqInLists in this.SquareCanMove)
             {
-                if(xAfter == sqInLists.Key && yAfter == sqInLists.Value)
+                if (xAfter == sqInLists.Key && yAfter == sqInLists.Value)
                     return true;
             }
             return false;
@@ -341,7 +359,7 @@ namespace chess
                     break;
                 }
             }
-            for (int i = xBefore-1; i >= 0; i--)
+            for (int i = xBefore - 1; i >= 0; i--)
             {
                 if (b.Squares[i, yBefore].Piece == null)
                     list.Add(new KeyValuePair<int, int>(i, yBefore));
@@ -355,7 +373,7 @@ namespace chess
             }
             for (int j = yBefore + 1; j < 8; j++)
             {
-                if (b.Squares[xBefore,j].Piece == null)
+                if (b.Squares[xBefore, j].Piece == null)
                     list.Add(new KeyValuePair<int, int>(xBefore, j));
                 else if (b.Squares[xBefore, j].Piece.Color == b.SelectedSquare.Piece.Color)
                     break;
@@ -365,7 +383,7 @@ namespace chess
                     break;
                 }
             }
-            for (int j = yBefore-1; j >= 0; j--)
+            for (int j = yBefore - 1; j >= 0; j--)
             {
                 if (b.Squares[xBefore, j].Piece == null)
                     list.Add(new KeyValuePair<int, int>(xBefore, j));
@@ -381,6 +399,7 @@ namespace chess
         }
     }
 
+    // Class representing the Knight piece
     public class Knight : Piece
     {
         public Knight(Square sq, PieceColor color) : base(sq, color)
@@ -390,18 +409,20 @@ namespace chess
             else
                 _image = ResourceScope.IMAGE_KNIGHT_BLACK;
         }
+
         public override bool checkValidMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
             if (sq.Piece == null || sq.Piece.Color != this.Color)
             {
                 int a = Math.Abs(xAfter - xBefore);
                 int b = Math.Abs(yAfter - yBefore);
-                if ((a == 2 && b == 1) || ( a == 1 && b == 2)) return true;
+                if ((a == 2 && b == 1) || (a == 1 && b == 2)) return true;
             }
             return false;
         }
     }
 
+    // Class representing the Bishop piece
     public class Bishop : Piece
     {
         public Bishop(Square sq, PieceColor color) : base(sq, color)
@@ -411,6 +432,7 @@ namespace chess
             else
                 _image = ResourceScope.IMAGE_BISHOP_BLACK;
         }
+
         public override bool checkValidMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
             this.SquareCanMove = findListSquareCanMove(xAfter, yAfter, xBefore, yBefore, sq);
@@ -421,13 +443,14 @@ namespace chess
             }
             return false;
         }
+
         public List<KeyValuePair<int, int>> findListSquareCanMove(int xAfter, int yAfter, int xBefore, int yBefore, Square sq)
         {
             List<KeyValuePair<int, int>> list = new List<KeyValuePair<int, int>>();
             Board b = sq.Boad;
-            for(int i = xBefore-1; i >= 0; i--)
+            for (int i = xBefore - 1; i >= 0; i--)
             {
-                for( int j = yBefore-1; j >= 0; j--)
+                for (int j = yBefore - 1; j >= 0; j--)
                 {
                     int xSub = Math.Abs(i - xBefore);
                     int ysub = Math.Abs(j - yBefore);
@@ -445,7 +468,7 @@ namespace chess
                     }
                 }
             }
-            DoneLoop1:
+        DoneLoop1:
             for (int i = xBefore - 1; i >= 0; i--)
             {
                 for (int j = yBefore + 1; j < 8; j++)
@@ -466,7 +489,7 @@ namespace chess
                     }
                 }
             }
-            DoneLoop2:
+        DoneLoop2:
             for (int i = xBefore + 1; i < 8; i++)
             {
                 for (int j = yBefore - 1; j >= 0; j--)
@@ -487,7 +510,7 @@ namespace chess
                     }
                 }
             }
-            DoneLoop3:
+        DoneLoop3:
             for (int i = xBefore + 1; i < 8; i++)
             {
                 for (int j = yBefore + 1; j < 8; j++)
@@ -508,7 +531,7 @@ namespace chess
                     }
                 }
             }
-            DoneLoop4:
+        DoneLoop4:
             return list;
         }
     }
